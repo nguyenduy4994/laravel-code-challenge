@@ -76,4 +76,9 @@ class Loan extends Model
             $loan->outstanding_amount = $loan->amount;
         });
     }
+
+    public function isFinishAllSchedule()
+    {
+        return $this->scheduledRepayments()->where('status', ScheduledRepayment::STATUS_DUE)->count() == 0;
+    }
 }

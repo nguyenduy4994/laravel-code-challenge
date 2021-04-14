@@ -81,7 +81,7 @@ class LoanService
                     ->orderBy('id')->first();
 
                 if (! $schedule) {
-                    return $receive;
+                    throw new Exception("No schedule found");
                 }
 
                 $schedule->outstanding_amount -= $amount;
@@ -100,7 +100,7 @@ class LoanService
             }
 
             $loan->outstanding_amount -= $receive->amount;
-            if ($loan->scheduledRepayments()->where('status', ScheduledRepayment::STATUS_DUE)->count() == 0) {
+            if ($loan->isFinishAllSchedule()) {
                 $loan->outstanding_amount = 0;
                 $loan->status = Loan::STATUS_REPAID;
             }
