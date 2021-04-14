@@ -11,9 +11,20 @@ class Loan extends Model
 {
     public const STATUS_DUE = 'due';
     public const STATUS_REPAID = 'repaid';
+    public const STATUSES = [
+        self::STATUS_DUE,
+        self::STATUS_REPAID
+    ];
 
     public const CURRENCY_SGD = 'SGD';
     public const CURRENCY_VND = 'VND';
+
+    public const TERM_3_MONTH = 3;
+    public const TERM_6_MONTH = 6;
+    public const TERMS = [
+        self::TERM_3_MONTH,
+        self::TERM_6_MONTH
+    ];
 
     use HasFactory;
 
@@ -57,5 +68,12 @@ class Loan extends Model
     public function scheduledRepayments()
     {
         return $this->hasMany(ScheduledRepayment::class, 'loan_id');
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($loan) {
+            $loan->outstanding_amount = $loan->amount;
+        });
     }
 }
